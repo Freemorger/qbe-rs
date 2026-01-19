@@ -588,14 +588,20 @@ impl fmt::Display for Type {
 }
 
 /// QBE value that is accepted by instructions
+use ordered_float::OrderedFloat;
+
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum Value {
     /// `%`-temporary
     Temporary(String),
     /// `$`-global
     Global(String),
-    /// Constant
+    /// Integer constant
     Const(u64),
+    /// Single-precision float constant (32-bit)
+    Float(OrderedFloat<f32>),
+    /// Double-precision float constant (64-bit)
+    Double(OrderedFloat<f64>),
 }
 
 impl fmt::Display for Value {
@@ -604,7 +610,27 @@ impl fmt::Display for Value {
             Self::Temporary(name) => write!(f, "%{name}"),
             Self::Global(name) => write!(f, "${name}"),
             Self::Const(value) => write!(f, "{value}"),
+            Self::Float(value) => {
+                let bits = value.into_inner().to_bits();
+                write!(f, "F{:08x}", bits)
+            }
+            Self::Double(value) => {
+                let bits = value.into_inner().to_bits();
+                write!(f, "D{:016x}", bits)
+            }
         }
+    }
+}
+
+impl Value {
+    /// Create a float constant
+    pub fn float(val: f32) -> Self {
+        Self::Float(OrderedFloat(val))
+    }
+    
+    /// Create a double constant
+    pub fn double(val: f64) -> Self {
+        Self::Double(OrderedFloat(val))
     }
 }
 
@@ -659,8 +685,12 @@ pub enum DataItem {
     Symbol(String, Option<u64>),
     /// String
     Str(String),
-    /// Constant
+    /// Integer constant
     Const(u64),
+    /// Single-precision float constant
+    Float(OrderedFloat<f32>),
+    /// Double-precision float constant
+    Double(OrderedFloat<f64>),
     /// Zero-initialized data of specified size
     Zero(u64),
 }
@@ -674,8 +704,28 @@ impl fmt::Display for DataItem {
             },
             Self::Str(string) => write!(f, "\"{string}\""),
             Self::Const(val) => write!(f, "{val}"),
+            Self::Float(val) => {
+                let bits = val.into_inner().to_bits();
+                write!(f, "F{:08x}", bits)
+            }
+            Self::Double(val) => {
+                let bits = val.into_inner().to_bits();
+                write!(f, "D{:016x}", bits)
+            }
             Self::Zero(size) => write!(f, "z {size}"),
         }
+    }
+}
+
+impl DataItem {
+    /// Create a float data item
+    pub fn float(val: f32) -> Self {
+        Self::Float(OrderedFloat(val))
+    }
+    
+    /// Create a double data item
+    pub fn double(val: f64) -> Self {
+        Self::Double(OrderedFloat(val))
     }
 }
 

@@ -11,3 +11,4 @@ description = "QBE IR for Rust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ordered-float = "5.1.0"
