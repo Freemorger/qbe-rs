@@ -610,14 +610,8 @@ impl fmt::Display for Value {
             Self::Temporary(name) => write!(f, "%{name}"),
             Self::Global(name) => write!(f, "${name}"),
             Self::Const(value) => write!(f, "{value}"),
-            Self::Float(value) => {
-                let bits = value.into_inner().to_bits();
-                write!(f, "F{:08x}", bits)
-            }
-            Self::Double(value) => {
-                let bits = value.into_inner().to_bits();
-                write!(f, "D{:016x}", bits)
-            }
+            Self::Float(value) => write!(f, "s_{value}"),
+            Self::Double(value) => write!(f, "d_{value}"),
         }
     }
 }
@@ -704,14 +698,8 @@ impl fmt::Display for DataItem {
             },
             Self::Str(string) => write!(f, "\"{string}\""),
             Self::Const(val) => write!(f, "{val}"),
-            Self::Float(val) => {
-                let bits = val.into_inner().to_bits();
-                write!(f, "F{:08x}", bits)
-            }
-            Self::Double(val) => {
-                let bits = val.into_inner().to_bits();
-                write!(f, "D{:016x}", bits)
-            }
+            Self::Float(val) => write!(f, "{val}"),
+            Self::Double(val) => write!(f, "{val}"),
             Self::Zero(size) => write!(f, "z {size}"),
         }
     }
