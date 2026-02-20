@@ -182,6 +182,7 @@ pub enum Cmp {
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum Instr {
+    Assign(Value, Type, Box<Instr>), // name, type, value
     /// Adds values of two temporaries together
     Add(Value, Value),
     /// Subtracts the second value from the first one
@@ -313,6 +314,7 @@ pub enum Instr {
 impl fmt::Display for Instr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            Self::Assign(n, t, v) => write!(f, "{n} ={t} {v}"),
             Self::Add(lhs, rhs) => write!(f, "add {lhs}, {rhs}"),
             Self::Sub(lhs, rhs) => write!(f, "sub {lhs}, {rhs}"),
             Self::Mul(lhs, rhs) => write!(f, "mul {lhs}, {rhs}"),
