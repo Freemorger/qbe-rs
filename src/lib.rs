@@ -600,6 +600,8 @@ pub enum Value {
     Global(String),
     /// Integer constant
     Const(u64),
+    /// Signed integer constant 
+    SignConst(i64),
     /// Single-precision float constant (32-bit)
     Float(OrderedFloat<f32>),
     /// Double-precision float constant (64-bit)
@@ -612,6 +614,7 @@ impl fmt::Display for Value {
             Self::Temporary(name) => write!(f, "%{name}"),
             Self::Global(name) => write!(f, "${name}"),
             Self::Const(value) => write!(f, "{value}"),
+            Self::SignConst(value) => write!(f, "{value}"),
             Self::Float(value) => write!(f, "s_{value}"),
             Self::Double(value) => write!(f, "d_{value}"),
         }
@@ -683,6 +686,8 @@ pub enum DataItem {
     Str(String),
     /// Integer constant
     Const(u64),
+    /// Signed integer contant
+    SignConst(i64), 
     /// Single-precision float constant
     Float(OrderedFloat<f32>),
     /// Double-precision float constant
@@ -700,6 +705,7 @@ impl fmt::Display for DataItem {
             },
             Self::Str(string) => write!(f, "\"{string}\""),
             Self::Const(val) => write!(f, "{val}"),
+            Self::SignConst(val) => write!(f, "{val}"),
             Self::Float(val) => write!(f, "{val}"),
             Self::Double(val) => write!(f, "{val}"),
             Self::Zero(size) => write!(f, "z {size}"),
